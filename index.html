@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory64 - Hafıza Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Ana Menü Ekranı -->
+        <div id="menuScreen" class="screen active">
+            <div class="menu-content">
+                <h1 class="game-title">Memory<span class="highlight">64</span></h1>
+                <p class="game-subtitle">Hafızanı Test Et</p>
+                
+                <div class="menu-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎮</div>
+                        <div class="stat-value" id="totalGamesPlayed">0</div>
+                        <div class="stat-label">Oyun</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-value" id="highestScore">0</div>
+                        <div class="stat-label">En Yüksek</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value" id="averageScore">0</div>
+                        <div class="stat-label">Ortalama</div>
+                    </div>
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-main-btn play-btn" onclick="showDifficultySelection()">
+                        <span class="btn-icon">🎯</span>
+                        <span class="btn-text">Oyna</span>
+                    </button>
+                    <button class="menu-main-btn leaderboard-btn" onclick="showLeaderboard()">
+                        <span class="btn-icon">🏅</span>
+                        <span class="btn-text">Skor Tablosu</span>
+                    </button>
+                    <button class="menu-main-btn settings-btn" onclick="showSettings()">
+                        <span class="btn-icon">⚙️</span>
+                        <span class="btn-text">Ayarlar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zorluk Seçimi Ekranı -->
+        <div id="difficultyScreen" class="screen">
+            <div class="menu-content">
+                <button class="back-small-btn" onclick="showScreen('menu')">← Geri</button>
+                <h2 class="screen-title">Zorluk Seç</h2>
+                
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn easy" onclick="startGame('easy')">
+                        <span class="diff-icon">🟢</span>
+                        <div class="diff-details">
+                            <span class="diff-name">Kolay</span>
+                            <span class="diff-desc">4-6 rakam, 5 saniye</span>
+                            <span class="diff-points">×10 Puan</span>
+                        </div>
+                    </button>
+                    
+                    <button class="difficulty-btn medium" onclick="startGame('medium')">
+                        <span class="diff-icon">🟡</span>
+                        <div class="diff-details">
+                            <span class="diff-name">Orta</span>
+                            <span class="diff-desc">7-9 rakam, 7 saniye</span>
+                            <span class="diff-points">×20 Puan</span>
+                        </div>
+                    </button>
+                    
+                    <button class="difficulty-btn hard" onclick="startGame('hard')">
+                        <span class="diff-icon">🟠</span>
+                        <div class="diff-details">
+                            <span class="diff-name">Zor</span>
+                            <span class="diff-desc">10-12 rakam, 10 saniye</span>
+                            <span class="diff-points">×30 Puan</span>
+                        </div>
+                    </button>
+                    
+                    <button class="difficulty-btn expert" onclick="startGame('expert')">
+                        <span class="diff-icon">🔴</span>
+                        <div class="diff-details">
+                            <span class="diff-name">Uzman</span>
+                            <span class="diff-desc">13-16 rakam, 15 saniye</span>
+                            <span class="diff-points">×50 Puan</span>
+                        </div>
+                    </button>
+
+                    <button class="difficulty-btn master" onclick="startGame('master')">
+                        <span class="diff-icon">💎</span>
+                        <div class="diff-details">
+                            <span class="diff-name">Usta</span>
+                            <span class="diff-desc">17-20 rakam, 20 saniye</span>
+                            <span class="diff-points">×100 Puan</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gösterme Ekranı -->
+        <div id="showingScreen" class="screen">
+            <div class="showing-content">
+                <h2 class="instruction">Sayıyı Ezberle!</h2>
+                <div class="difficulty-badge" id="showingDifficultyBadge"></div>
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <span id="timerText">0</span>
+                    </div>
+                </div>
+                <div class="number-display" id="numberDisplay"></div>
+                <div class="hint-text">Süre bitince sayı gizlenecek!</div>
+            </div>
+        </div>
+
+        <!-- Cevaplama Ekranı -->
+        <div id="answeringScreen" class="screen">
+            <div class="answering-content">
+                <h2 class="instruction">Eksik Rakamları Tamamla</h2>
+                <div class="difficulty-badge" id="answeringDifficultyBadge"></div>
+                <div class="number-input-container" id="numberInputContainer"></div>
+                
+                <div class="questions-container" id="questionsContainer"></div>
+                
+                <button class="submit-btn" onclick="checkAnswers()">
+                    <span>Cevapları Gönder</span>
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sonuç Ekranı -->
+        <div id="resultsScreen" class="screen">
+            <div class="results-content">
+                <h2 class="results-title">Sonuçlar</h2>
+                <div class="score-display">
+                    <span class="score-label">Puan</span>
+                    <span class="score-value" id="scoreValue">0</span>
+                    <div class="score-badge" id="scoreBadge"></div>
+                </div>
+                
+                <div class="original-number">
+                    <span class="label">Orijinal Sayı:</span>
+                    <span class="number" id="originalNumberDisplay"></span>
+                </div>
+                
+                <div class="results-details" id="resultsDetails"></div>
+                
+                <div class="results-buttons">
+                    <button class="secondary-btn" onclick="showLeaderboard()">
+                        <span>🏅 Skor Tablosu</span>
+                    </button>
+                    <button class="primary-btn" onclick="showDifficultySelection()">
+                        <span>🔄 Tekrar Oyna</span>
+                    </button>
+                    <button class="back-btn" onclick="backToMenu()">
+                        <span>🏠 Ana Menü</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skor Tablosu Ekranı -->
+        <div id="leaderboardScreen" class="screen">
+            <div class="menu-content">
+                <button class="back-small-btn" onclick="backToMenu()">← Geri</button>
+                <h2 class="screen-title">🏆 Skor Tablosu</h2>
+                
+                <div class="leaderboard-filters">
+                    <button class="filter-btn active" data-filter="all" onclick="filterLeaderboard('all')">Tümü</button>
+                    <button class="filter-btn" data-filter="easy" onclick="filterLeaderboard('easy')">Kolay</button>
+                    <button class="filter-btn" data-filter="medium" onclick="filterLeaderboard('medium')">Orta</button>
+                    <button class="filter-btn" data-filter="hard" onclick="filterLeaderboard('hard')">Zor</button>
+                    <button class="filter-btn" data-filter="expert" onclick="filterLeaderboard('expert')">Uzman</button>
+                    <button class="filter-btn" data-filter="master" onclick="filterLeaderboard('master')">Usta</button>
+                </div>
+
+                <div class="leaderboard-list" id="leaderboardList">
+                    <div class="empty-state">
+                        <div class="empty-icon">🎮</div>
+                        <p>Henüz skor yok!</p>
+                        <p class="empty-desc">İlk oyununu oyna ve listede yerini al.</p>
+                    </div>
+                </div>
+
+                <button class="danger-btn" onclick="clearLeaderboard()">
+                    🗑️ Skor Tablosunu Temizle
+                </button>
+            </div>
+        </div>
+
+        <!-- Ayarlar Ekranı -->
+        <div id="settingsScreen" class="screen">
+            <div class="menu-content">
+                <button class="back-small-btn" onclick="backToMenu()">← Geri</button>
+                <h2 class="screen-title">⚙️ Ayarlar</h2>
+                
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">🔊 Ses Efektleri</div>
+                            <div class="setting-desc">Oyun seslerini aç/kapat</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="soundToggle" onchange="toggleSound()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">🌙 Karanlık Mod</div>
+                            <div class="setting-desc">Gözlerini koru</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">💾 Otomatik Kayıt</div>
+                            <div class="setting-desc">Skorları otomatik kaydet</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="autoSaveToggle" checked onchange="toggleAutoSave()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-divider"></div>
+
+                    <div class="setting-item clickable" onclick="showStats()">
+                        <div class="setting-info">
+                            <div class="setting-title">📊 İstatistikler</div>
+                            <div class="setting-desc">Detaylı oyun istatistiklerini gör</div>
+                        </div>
+                        <span class="setting-arrow">→</span>
+                    </div>
+
+                    <div class="setting-item clickable" onclick="resetAllData()">
+                        <div class="setting-info">
+                            <div class="setting-title">🔄 Tüm Verileri Sıfırla</div>
+                            <div class="setting-desc">Tüm skorları ve ayarları sıfırla</div>
+                        </div>
+                        <span class="setting-arrow">→</span>
+                    </div>
+                </div>
+
+                <div class="app-info">
+                    <p>Memory64 v2.0</p>
+                    <p>© 2024 - Hafıza Oyunu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
