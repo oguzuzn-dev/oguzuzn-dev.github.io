@@ -294,6 +294,13 @@ body.dark-mode .screen-title {
     text-align: center;
 }
 
+.showing-content * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 .instruction {
     font-size: 32px;
     font-weight: 700;
@@ -377,6 +384,10 @@ body.dark-mode .screen-title {
     border-radius: 16px;
     font-family: 'Courier New', monospace;
     margin-bottom: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .hint-text {
